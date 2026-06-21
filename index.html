@@ -238,21 +238,21 @@ return '<a class="xr" onclick="event.stopPropagation();or(\''+m.replace(/'/g,'')
 }
 
 function or(ref,ln){
-const lm=ref.match(/^(民法|刑法|憲法|行政程序法)/);
+const lm=ref.match(/^(民法|刑法|憲法|憲法增修條文|行政程序法|行政訴訟法|行政罰法|行政執行法|民事訴訟法|刑事訴訟法|強制執行法|訴願法|國家賠償法|勞動基準法|著作權法|商標法|專利法|營業秘密法|通訊保障及監察法|貪污治罪條例|公司法|家庭暴力防治法|公務人員任用法)/);
 const sl=lm?lm[1]:ln;
 const np=ref.replace(/^(?:民法|刑法|憲法|行政程序法)/,'').replace(/第/,'').replace(/條.*$/,'');
 const f=L.find(l=>l.lawName===sl&&l.articleNum.replace(/\s/g,'').includes(np));
 if(f)ol(f.id);
 }
 
-function tb(id){const i=bm.indexOf(id);if(i>-1)bm.splice(i,1);else bm.push(id);localStorage.setItem('bm',JSON.stringify(bm));rl()}
+function tb(id){const i=bm.indexOf(id);if(i>-1)bm.splice(i,1);else bm.push(id);localStorage.setItem('lawapp_bm',JSON.stringify(bm));rl()}
 function rb(){
 const e=document.getElementById('bl'),bs=L.filter(l=>bm.includes(l.id));
 if(!bs.length){e.innerHTML='<div class="ety"><p style="font-size:32px">📑</p><p>尚無收藏</p></div>';return}
 e.innerHTML=bs.map(l=>{const c=lcc(l.lawName);return '<div class="cd '+c+'" onclick="ol(\''+l.id+'\')"><div class="cdt"><span class="bdg">'+l.lawName+'</span><span class="cdn">'+l.articleNum+'</span><span class="bm on" onclick="event.stopPropagation();tb(\''+l.id+'\');rb()">★</span></div><div class="cdtx">'+l.paragraphs.map(p=>p.text).join(' ').slice(0,100)+'</div></div>'}).join('');
 }
 
-function sn(id){const t=document.getElementById('na').value.trim();if(t)nt[id]=t;else delete nt[id];localStorage.setItem('nt',JSON.stringify(nt));alert('筆記已儲存！')}
+function sn(id){const t=document.getElementById('na').value.trim();if(t)nt[id]=t;else delete nt[id];localStorage.setItem('lawapp_nt',JSON.stringify(nt));alert('筆記已儲存！')}
 function rn(){
 const e=document.getElementById('nl'),ids=Object.keys(nt),nd=L.filter(l=>ids.includes(l.id));
 if(!nd.length){e.innerHTML='<div class="ety"><p style="font-size:32px">📝</p><p>尚無筆記</p></div>';return}
