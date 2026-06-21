@@ -1,0 +1,48 @@
+name: 自動更新法規資料
+
+on:
+  schedule:
+    # 每週一早上 8:00 (UTC+8) 自動執行
+    - cron: '0 0 * * 1'
+  # 也可以手動觸發
+  workflow_dispatch:
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: 下載最新法規
+        run: node scripts/update-laws.js
+
+      - name: 下載最新釋字
+        run: node scripts/update-interps.js
+        continue-on-error: true
+
+      - name: 檢查是否有更新
+        id: check
+        run: |
+          if git diff --quiet; then
+            echo "changed=false" >> $GITHUB_OUTPUT
+            echo "📭 沒有更新"
+          else
+            echo "changed=true" >> $GITHUB_OUTPUT
+            echo "📬 有新的更新！"
+            git diff --stat
+          fi
+
+      - name: 提交更新
+        if: steps.check.outputs.changed == 'true'
+        run: |
+          git config user.name "GitHub Actions Bot"
+          git config user.email "actions@github.com"
+          git add laws.json interpretations.json
+          git commit -m "🔄 自動更新法規資料 $(date +'%Y-%m-%d')"
+          git push
