@@ -2,299 +2,349 @@
 <html lang="zh-TW">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0">
-<title>⚖ 法規通 — 國考法規速查</title>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<title>法規通 — 國考法規速查</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700;900&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-:root{--pri:#78350F;--acc:#B45309;--bg:#F8FAFC;--card:#FFF;--tx:#1E293B;--tx2:#64748B;--tx3:#94A3B8;--bd:#E2E8F0}
-body{font-family:'Noto Sans TC',-apple-system,sans-serif;background:var(--bg);color:var(--tx)}
-#loading{position:fixed;inset:0;background:#FFFBEB;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;font-size:18px;color:var(--pri)}
-#loading.hide{display:none}
+:root{
+  --bg:#FAFBFD;--card:#FFFFFF;--glass:rgba(255,255,255,0.72);
+  --pri:#6C5CE7;--pri2:#A29BFE;--pri3:#DFE6FF;
+  --warm:#F8B500;--warm2:#FFEAA7;
+  --tx:#2D3436;--tx2:#636E72;--tx3:#B2BEC3;
+  --bd:#E8ECF1;--shadow:0 2px 16px rgba(108,92,231,0.06);
+  --r:16px;
+}
+body{font-family:'Noto Sans TC',-apple-system,BlinkMacSystemFont,sans-serif;background:var(--bg);color:var(--tx);overflow-x:hidden;-webkit-font-smoothing:antialiased}
 
-.hdr{background:linear-gradient(135deg,#FFFBEB,#FEF3C7);padding:14px 20px;border-bottom:1px solid #F5E6B8;display:flex;align-items:baseline;gap:14px;position:sticky;top:0;z-index:100}
-.hdr h1{font-size:22px;color:var(--pri)}
-.hdr .sub{font-size:13px;color:var(--acc)}
-.tabs{display:flex;background:#FFF;border-bottom:2px solid var(--bd);position:sticky;top:52px;z-index:99}
-.tab{flex:1;padding:11px;text-align:center;cursor:pointer;font-weight:700;font-size:14px;color:var(--tx3);border-bottom:3px solid transparent;transition:.2s}
+/* Loading */
+#ld{position:fixed;inset:0;background:linear-gradient(135deg,#FAFBFD 0%,#F0EDFF 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;transition:opacity .5s}
+#ld.done{opacity:0;pointer-events:none}
+#ld h2{font-size:28px;background:linear-gradient(135deg,var(--pri),#fd79a8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-top:16px}
+.spinner{width:40px;height:40px;border:3px solid var(--pri3);border-top-color:var(--pri);border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* Header */
+.hdr{background:var(--glass);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid var(--bd);padding:16px 24px;display:flex;align-items:center;gap:14px;position:sticky;top:0;z-index:100}
+.logo{font-size:26px;font-weight:900;background:linear-gradient(135deg,var(--pri),#fd79a8);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hdr .cnt{font-size:13px;color:var(--tx3);font-weight:500}
+
+/* Tabs */
+.tabs{display:flex;background:var(--glass);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid var(--bd);position:sticky;top:57px;z-index:99;padding:0 16px}
+.tab{flex:1;padding:13px 8px;text-align:center;cursor:pointer;font-weight:700;font-size:14px;color:var(--tx3);border-bottom:3px solid transparent;transition:all .25s}
 .tab:hover{color:var(--tx2)}
-.tab.on{color:var(--pri);border-bottom-color:var(--acc)}
-.sarea{padding:14px 20px 6px;position:sticky;top:96px;z-index:98;background:var(--bg)}
-.sbox{display:flex;align-items:center;gap:10px;background:#FFF;border:2px solid var(--bd);border-radius:14px;padding:10px 16px}
-.sbox input{flex:1;border:none;outline:none;font-size:15px;font-family:inherit}
-.sbox .x{cursor:pointer;color:var(--tx3);font-size:18px;padding:0 4px}
-.cbar{display:flex;gap:8px;padding:8px 20px;overflow-x:auto}
-.cbtn{padding:8px 16px;border-radius:20px;border:1.5px solid var(--bd);background:#FFF;color:var(--tx2);font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;transition:.15s}
-.cbtn:hover{border-color:var(--acc);color:var(--acc)}
-.cbtn.on{background:var(--pri);color:#FFF;border-color:var(--pri)}
-.main{display:flex;max-width:1100px;margin:0 auto}
-.larea{flex:1;padding:4px 20px 40px}
-.rail{width:40px;position:sticky;top:150px;height:calc(100vh - 170px);display:flex;flex-direction:column;justify-content:space-between;align-items:center;padding:6px 0;cursor:pointer;user-select:none}
-.rail span{font-size:9px;color:var(--tx3);font-weight:700}
-.rail:hover span{color:var(--pri)}
-.rcnt{padding:2px 0 6px;font-size:13px;color:var(--tx3)}
+.tab.on{color:var(--pri);border-bottom-color:var(--pri)}
 
-/* Colors */
-.lc-0{--a:#D97706;--b:#FEF3C7;--c:#92400E;--d:#FFFBEB}
-.lc-1{--a:#3B82F6;--b:#DBEAFE;--c:#1E40AF;--d:#EFF6FF}
-.lc-2{--a:#EF4444;--b:#FEE2E2;--c:#991B1B;--d:#FEF2F2}
-.lc-3{--a:#10B981;--b:#D1FAE5;--c:#065F46;--d:#ECFDF5}
-.lc-4{--a:#6366F1;--b:#E0E7FF;--c:#3730A3;--d:#EEF2FF}
-.lc-5{--a:#EC4899;--b:#FCE7F3;--c:#9D174D;--d:#FDF2F8}
-.lc-6{--a:#14B8A6;--b:#CCFBF1;--c:#115E59;--d:#F0FDFA}
-.lc-7{--a:#06B6D4;--b:#CFFAFE;--c:#155E75;--d:#ECFEFF}
-.lc-8{--a:#F43F5E;--b:#FFE4E6;--c:#9F1239;--d:#FFF1F2}
-.lc-9{--a:#A855F7;--b:#F3E8FF;--c:#6B21A8;--d:#FAF5FF}
+/* Search */
+.sarea{padding:16px 20px 8px;position:sticky;top:104px;z-index:98;background:var(--bg)}
+.sbox{display:flex;align-items:center;gap:12px;background:var(--card);border:2px solid var(--bd);border-radius:var(--r);padding:12px 18px;box-shadow:var(--shadow);transition:border-color .2s}
+.sbox:focus-within{border-color:var(--pri2)}
+.sbox input{flex:1;border:none;outline:none;font-size:16px;font-family:inherit;background:transparent;color:var(--tx)}
+.sbox input::placeholder{color:var(--tx3)}
+.sbox .icon{color:var(--pri2);font-size:18px}
+.sbox .x{cursor:pointer;color:var(--tx3);font-size:18px;padding:2px 4px;border-radius:50%;transition:.15s}
+.sbox .x:hover{background:#F0F0F0}
 
-.cd{background:var(--card);border-radius:12px;padding:14px 16px;margin-bottom:8px;border-left:4px solid var(--a,#6B7280);cursor:pointer;transition:box-shadow .15s}
-.cd:hover{box-shadow:0 2px 12px rgba(0,0,0,.08)}
-.cdt{display:flex;align-items:center;gap:8px;margin-bottom:3px;flex-wrap:wrap}
-.bdg{font-size:11px;font-weight:700;padding:3px 8px;border-radius:6px;background:var(--b,#F3F4F6);color:var(--c,#374151)}
-.cdn{font-size:15px;font-weight:700}
-.cdp{font-size:11px;color:var(--tx3)}
-.cdch{font-size:12px;color:var(--a);font-weight:700;margin-bottom:2px}
-.cdtx{font-size:14px;line-height:1.65;color:var(--tx2);display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
-.cdkw{display:flex;gap:5px;flex-wrap:wrap;margin-top:6px}
-.kwt{font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:var(--d,#F5F5F5);color:var(--c,#374151)}
-.bm{margin-left:auto;cursor:pointer;font-size:20px;color:#D1D5DB;transition:.15s}
-.bm.on{color:#D97706}
+/* Categories */
+.cbar{display:flex;gap:8px;padding:10px 20px;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.cbar::-webkit-scrollbar{display:none}
+.cbtn{padding:8px 18px;border-radius:24px;border:1.5px solid var(--bd);background:var(--card);color:var(--tx2);font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;transition:all .2s;box-shadow:0 1px 4px rgba(0,0,0,0.04)}
+.cbtn:hover{border-color:var(--pri2);color:var(--pri);transform:translateY(-1px)}
+.cbtn.on{background:var(--pri);color:#FFF;border-color:var(--pri);box-shadow:0 4px 12px rgba(108,92,231,0.3)}
+
+.rcnt{padding:4px 20px 8px;font-size:13px;color:var(--tx3);font-weight:500}
+
+/* Cards */
+.clist{padding:0 20px 40px}
+.cd{background:var(--card);border-radius:var(--r);padding:16px 18px;margin-bottom:10px;border-left:4px solid var(--pri2);cursor:pointer;transition:all .2s;box-shadow:var(--shadow)}
+.cd:hover{transform:translateY(-2px);box-shadow:0 4px 20px rgba(108,92,231,0.12)}
+.cd:active{transform:scale(0.99)}
+.cdt{display:flex;align-items:center;gap:8px;margin-bottom:6px;flex-wrap:wrap}
+.bdg{font-size:11px;font-weight:700;padding:4px 10px;border-radius:8px;letter-spacing:0.3px}
+.cdn{font-size:16px;font-weight:800;color:var(--tx)}
+.cdst{font-size:13px;font-weight:700;color:var(--pri);margin-bottom:4px}
+.cdch{font-size:11px;color:var(--tx3);margin-bottom:3px}
+.cdtx{font-size:14px;line-height:1.7;color:var(--tx2);display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.cdkw{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.kwt{font-size:10px;font-weight:600;padding:3px 10px;border-radius:20px;background:var(--pri3);color:var(--pri)}
+.bm{margin-left:auto;cursor:pointer;font-size:22px;color:var(--tx3);transition:all .2s}
+.bm:hover{transform:scale(1.2)}
+.bm.on{color:var(--warm)}
 
 /* Modal */
-.ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:200}
+.ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.35);backdrop-filter:blur(4px);z-index:200;animation:fadeIn .2s}
 .ov.show{display:block}
-.mo{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:700px;max-height:85vh;background:#FFF;border-radius:20px 20px 0 0;z-index:201;display:flex;flex-direction:column}
-.mh{width:36px;height:4px;background:#D1D5DB;border-radius:2px;margin:10px auto 6px}
-.mhd{display:flex;align-items:center;gap:10px;padding:10px 20px 12px;border-bottom:3px solid var(--a,#999);flex-wrap:wrap}
-.mhd .an{font-size:20px;font-weight:800}
-.mhd .st{font-weight:700;color:var(--a)}
-.mcl{margin-left:auto;cursor:pointer;font-size:24px;color:var(--tx3);padding:4px 8px}
-.mb{flex:1;overflow-y:auto;padding:16px 20px 40px}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.mo{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:680px;max-height:88vh;background:var(--card);border-radius:24px 24px 0 0;z-index:201;display:flex;flex-direction:column;animation:slideUp .3s ease-out}
+@keyframes slideUp{from{transform:translateX(-50%) translateY(100%)}to{transform:translateX(-50%) translateY(0)}}
+.mh{width:40px;height:5px;background:var(--bd);border-radius:3px;margin:12px auto 8px}
+.mhd{display:flex;align-items:center;gap:12px;padding:8px 24px 14px;border-bottom:3px solid var(--pri2);flex-wrap:wrap}
+.mhd .an{font-size:22px;font-weight:900;color:var(--tx)}
+.mhd .st{font-weight:700;color:var(--pri);font-size:15px;margin-top:2px}
+.mcl{margin-left:auto;cursor:pointer;width:36px;height:36px;border-radius:50%;background:var(--bg);display:flex;align-items:center;justify-content:center;font-size:18px;color:var(--tx2);transition:.2s}
+.mcl:hover{background:var(--bd)}
+.mb{flex:1;overflow-y:auto;padding:16px 24px 40px;-webkit-overflow-scrolling:touch}
 
-.chb{border-left:4px solid var(--a,#999);background:var(--d,#F9FAFB);padding:10px 14px;border-radius:8px;margin-bottom:16px;font-weight:700;color:var(--c)}
-.pr{border-left:3px solid var(--a,#999);padding:10px 14px;margin-bottom:2px;background:#FFF;border-radius:8px}
-.pr.ind{margin-left:28px;border-left:2px solid #CBD5E1;background:#FAFAFA;padding:6px 12px}
+.chb{border-left:4px solid var(--pri);background:linear-gradient(135deg,var(--pri3),#F8F9FF);padding:12px 16px;border-radius:12px;margin-bottom:18px;font-weight:700;font-size:15px;color:var(--pri)}
+
+/* Paragraphs */
+.pr{border-left:3px solid var(--pri2);padding:12px 16px;margin-bottom:3px;background:var(--card);border-radius:10px}
+.pr.ind{margin-left:28px;border-left:2px solid var(--bd);background:#FAFBFD;padding:8px 14px}
 .pl{display:inline-block;font-size:11px;font-weight:700;padding:3px 10px;border-radius:6px;margin-bottom:6px}
-.pl.xi{background:var(--b,#F3F4F6);color:var(--c,#374151)}
-.pl.ku{background:#F1F5F9;color:#64748B}
-.pt{font-size:15px;line-height:1.8}
-.pr.ind .pt{font-size:14px;line-height:1.7}
-.xr{color:#2563EB;font-weight:700;cursor:pointer;border-bottom:2px solid #93C5FD;text-decoration:none}
-.xr:hover{background:#EFF6FF}
-.sec{margin-top:24px}
-.sct{font-size:14px;font-weight:700;color:var(--pri);margin-bottom:10px}
+.pl.xi{background:var(--pri3);color:var(--pri)}
+.pl.ku{background:#F1F5F9;color:var(--tx2)}
+.pt{font-size:15px;line-height:1.85;color:var(--tx)}
+.pr.ind .pt{font-size:14px;line-height:1.75;color:var(--tx2)}
+
+.xr{color:var(--pri);font-weight:700;cursor:pointer;border-bottom:2px solid var(--pri2);text-decoration:none;transition:.15s;padding:0 2px;border-radius:2px}
+.xr:hover{background:var(--pri3)}
+
+.sec{margin-top:28px}
+.sct{font-size:15px;font-weight:800;color:var(--pri);margin-bottom:12px;display:flex;align-items:center;gap:6px}
 .kww{display:flex;flex-wrap:wrap;gap:8px}
-.kwc{padding:5px 14px;border-radius:16px;font-size:13px;font-weight:600;cursor:pointer;background:var(--d);color:var(--c)}
-.nta{width:100%;border:2px solid var(--acc);border-radius:10px;padding:12px;font-size:14px;font-family:inherit;resize:vertical;min-height:80px}
-.btn{padding:6px 16px;border-radius:8px;border:none;cursor:pointer;font-weight:700;font-family:inherit;font-size:13px}
-.bp{background:var(--acc);color:#FFF}
-.nb{background:#FFFBEB;border:1px solid #FDE68A;border-radius:10px;padding:14px;margin-top:8px;white-space:pre-wrap}
+.kwc{padding:6px 16px;border-radius:20px;font-size:13px;font-weight:600;cursor:pointer;background:var(--pri3);color:var(--pri);transition:.2s;border:none}
+.kwc:hover{background:var(--pri2);color:#FFF}
+.nta{width:100%;border:2px solid var(--bd);border-radius:12px;padding:14px;font-size:14px;font-family:inherit;resize:vertical;min-height:80px;transition:border-color .2s;outline:none}
+.nta:focus{border-color:var(--pri2)}
+.btn{padding:8px 20px;border-radius:10px;border:none;cursor:pointer;font-weight:700;font-family:inherit;font-size:13px;transition:all .2s}
+.bp{background:var(--pri);color:#FFF;box-shadow:0 2px 8px rgba(108,92,231,0.3)}
+.bp:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(108,92,231,0.4)}
+.nb{background:linear-gradient(135deg,#FFFDF0,#FFF9E0);border:1px solid var(--warm2);border-radius:12px;padding:16px;margin-top:10px;white-space:pre-wrap;line-height:1.7;font-size:14px}
 
 /* Interp */
-.ic{background:#FFF;border-left:4px solid #3B82F6;border-radius:12px;padding:14px 16px;margin-bottom:8px;cursor:pointer}
-.ic:hover{box-shadow:0 2px 12px rgba(0,0,0,.08)}
-.itt{font-size:17px;font-weight:700;color:#1E40AF}
-.itd{font-size:12px;color:var(--tx3);margin-bottom:4px}
-.iti{font-size:14px;line-height:1.6;color:var(--tx2);display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.ic{background:var(--card);border-left:4px solid #0984E3;border-radius:var(--r);padding:16px 18px;margin-bottom:10px;cursor:pointer;box-shadow:var(--shadow);transition:all .2s}
+.ic:hover{transform:translateY(-2px);box-shadow:0 4px 20px rgba(9,132,227,0.12)}
+.itt{font-size:17px;font-weight:800;color:#0984E3}
+.itd{font-size:12px;color:var(--tx3);margin:2px 0 6px}
+.iti{font-size:14px;line-height:1.65;color:var(--tx2);display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
 
 .pg{display:none}.pg.on{display:block}
 .ety{text-align:center;padding:60px 20px;color:var(--tx3)}
+.ety p:first-child{font-size:40px;margin-bottom:8px}
 
-@media(max-width:600px){.hdr{padding:12px 16px}.sarea{padding:10px 16px 4px}.cbar{padding:6px 16px}.larea{padding:4px 16px 40px}.mo{max-width:100%}}
+/* Color map */
+.lc0{--ac:#6C5CE7;--abg:#DFE6FF;--atx:#4834D4;--alt:#F0EDFF}
+.lc1{--ac:#0984E3;--abg:#D6EAF8;--atx:#0652DD;--alt:#EBF5FB}
+.lc2{--ac:#E17055;--abg:#FDEBD0;--atx:#D63031;--alt:#FEF5EE}
+.lc3{--ac:#00B894;--abg:#D1F2EB;--atx:#00785A;--alt:#E8F8F5}
+.lc4{--ac:#6C5CE7;--abg:#E8DAEF;--atx:#5B2C6F;--alt:#F4ECF7}
+.lc5{--ac:#E84393;--abg:#FADBD8;--atx:#C2185B;--alt:#FDEDEC}
+.lc6{--ac:#00CEC9;--abg:#D1F2EB;--atx:#00897B;--alt:#E0F7FA}
+.lc7{--ac:#0984E3;--abg:#D4E6F1;--atx:#1565C0;--alt:#EBF5FB}
+.lc8{--ac:#FD79A8;--abg:#F9E1EC;--atx:#C2185B;--alt:#FDF2F8}
+.cd.lc0,.cd.lc1,.cd.lc2,.cd.lc3,.cd.lc4,.cd.lc5,.cd.lc6,.cd.lc7,.cd.lc8{border-left-color:var(--ac)}
+
+/* Rail */
+.rail{width:36px;position:fixed;right:4px;top:170px;bottom:80px;display:flex;flex-direction:column;justify-content:space-between;align-items:center;z-index:50;opacity:0.5;transition:opacity .2s}
+.rail:hover{opacity:1}
+.rail span{font-size:9px;color:var(--pri);font-weight:700;cursor:pointer;padding:1px 0}
+
+@media(max-width:600px){
+  .hdr{padding:12px 16px}.sarea{padding:12px 16px 4px}.cbar{padding:8px 16px}
+  .clist{padding:0 16px 40px}.mo{max-width:100%;border-radius:20px 20px 0 0}
+  .mb{padding:14px 18px 40px}
+}
 </style>
 </head>
 <body>
-<div id="loading"><div style="font-size:48px;margin-bottom:16px">⚖</div>法規通載入中...</div>
+<div id="ld"><div class="spinner"></div><h2>法規通</h2><p style="color:#B2BEC3;margin-top:8px">載入法規資料中...</p></div>
 
-<div class="hdr"><h1>⚖ 法規通</h1><span class="sub" id="totalLabel">載入中...</span></div>
+<div class="hdr">
+  <span class="logo">⚖ 法規通</span>
+  <span class="cnt" id="cntLabel"></span>
+</div>
+
 <div class="tabs">
-<div class="tab on" onclick="stab('s')">🔍 搜尋</div>
-<div class="tab" onclick="stab('i')">📜 釋字</div>
-<div class="tab" onclick="stab('b')">⭐ 收藏</div>
-<div class="tab" onclick="stab('n')">📝 筆記</div>
+  <div class="tab on" onclick="stab('s')">🔍 搜尋</div>
+  <div class="tab" onclick="stab('i')">📜 釋字</div>
+  <div class="tab" onclick="stab('b')">⭐ 收藏</div>
+  <div class="tab" onclick="stab('n')">📝 筆記</div>
 </div>
 
 <div class="pg on" id="pg-s">
-<div class="sarea"><div class="sbox"><span>🔍</span><input id="si" placeholder="搜尋法條、關鍵字、條號..." oninput="ds()"><span class="x" onclick="document.getElementById('si').value='';ds()">✕</span></div></div>
-<div class="cbar" id="cb"></div>
-<div class="main"><div class="larea"><div class="rcnt" id="rc"></div><div id="ll"></div></div><div class="rail" id="rl" onmousedown="srd(event)" ontouchstart="srd(event)"></div></div>
+  <div class="sarea"><div class="sbox"><span class="icon">🔍</span><input id="si" placeholder="搜尋法條、關鍵字、條號..." oninput="ds()"><span class="x" onclick="document.getElementById('si').value='';ds()">✕</span></div></div>
+  <div class="cbar" id="cb"></div>
+  <div class="rcnt" id="rc"></div>
+  <div class="clist" id="ll"></div>
+  <div class="rail" id="rl"></div>
 </div>
 
 <div class="pg" id="pg-i">
-<div class="sarea"><div class="sbox"><span>🔍</span><input id="ii" placeholder="搜尋字號或關鍵字..." oninput="di()"></div></div>
-<div class="larea" style="max-width:700px;margin:0 auto"><div id="il"></div></div>
+  <div class="sarea"><div class="sbox"><span class="icon">🔍</span><input id="ii" placeholder="搜尋字號或關鍵字..." oninput="di()"></div></div>
+  <div class="clist" style="max-width:680px;margin:0 auto" id="il"></div>
 </div>
 
-<div class="pg" id="pg-b"><div class="larea" style="max-width:700px;margin:0 auto;padding-top:20px"><h2 style="font-size:20px;margin-bottom:16px">⭐ 我的收藏</h2><div id="bl"></div></div></div>
-<div class="pg" id="pg-n"><div class="larea" style="max-width:700px;margin:0 auto;padding-top:20px"><h2 style="font-size:20px;margin-bottom:16px">📝 我的筆記</h2><div id="nl"></div></div></div>
+<div class="pg" id="pg-b"><div class="clist" style="max-width:680px;margin:0 auto;padding-top:20px"><h2 style="font-size:20px;margin-bottom:16px;color:var(--pri)">⭐ 我的收藏</h2><div id="bl"></div></div></div>
+<div class="pg" id="pg-n"><div class="clist" style="max-width:680px;margin:0 auto;padding-top:20px"><h2 style="font-size:20px;margin-bottom:16px;color:var(--pri)">📝 我的筆記</h2><div id="nl"></div></div></div>
 
 <div class="ov" id="ov" onclick="cm()"><div class="mo" onclick="event.stopPropagation()"><div class="mh"></div><div class="mhd" id="mhd"></div><div class="mb" id="mb"></div></div></div>
 
 <script>
-let L=[],I=[],C=[],cc='全部',cq='',fl=[],bm=JSON.parse(localStorage.getItem('lawapp_bm')||'[]'),nt=JSON.parse(localStorage.getItem('lawapp_nt')||'{}');
+let L=[],I=[],C=[],cc='全部',fl=[];
+let bm,nt;
+try{bm=JSON.parse(localStorage.getItem('lawapp_bm2'))||[]}catch(e){bm=[]}
+try{nt=JSON.parse(localStorage.getItem('lawapp_nt2'))||{}}catch(e){nt={}}
 
-const CM={
-'憲法':0,'憲法增修條文':0,'民法':1,'刑法':2,'貪污治罪條例':2,
-'民事訴訟法':4,'強制執行法':4,'刑事訴訟法':5,'通訊保障及監察法':5,
-'行政程序法':3,'行政罰法':3,'行政執行法':3,'行政訴訟法':6,'訴願法':6,
-'國家賠償法':0,'勞動基準法':0,'家庭暴力防治法':8,
-'著作權法':7,'商標法':7,'專利法':7,'營業秘密法':7,'公司法':7,
-'公務人員任用法':8,'公務員服務法':8,'公務人員考績法':8,
-'中央法規標準法':9,'地方制度法':9,'國籍法':9,
-};
-function lcc(n){return 'lc-'+(CM[n]??0)}
+const CM={'憲法':0,'憲法增修條文':0,'民法':1,'刑法':2,'貪污治罪條例':2,'民事訴訟法':4,'強制執行法':4,'刑事訴訟法':5,'通訊保障及監察法':5,'行政程序法':3,'行政罰法':3,'行政執行法':3,'行政訴訟法':6,'訴願法':6,'國家賠償法':0,'勞動基準法':0,'家庭暴力防治法':8,'著作權法':7,'商標法':7,'專利法':7,'營業秘密法':7,'公司法':7,'公務人員任用法':8};
 
-function gst(ch){if(!ch)return '';const m=ch.match(/(?:第[\s]*[一二三四五六七八九十百零\d]+[\s]*(?:編|章|節|款|目))[\s]*(.+)/);return m&&m[1]?m[1].trim():''}
+function cn2n(s){if(!s||/^\d+$/.test(s))return s;var m={零:0,一:1,二:2,三:3,四:4,五:5,六:6,七:7,八:8,九:9,十:10,百:100};var r=0,c=0;for(var i=0;i<s.length;i++){var v=m[s[i]];if(v===undefined)continue;if(v===100){r+=(c||1)*100;c=0}else if(v===10){r+=(c||1)*10;c=0}else c=v}return String(r+c)}
+
+function gst(ch){if(!ch)return'';var m=ch.match(/(?:第[\s]*[一二三四五六七八九十百零\d]+[\s]*(?:編|章|節|款|目))[\s]*(.+)/);return m&&m[1]?m[1].trim():''}
+
+function saveBm(){try{localStorage.setItem('lawapp_bm2',JSON.stringify(bm))}catch(e){}}
+function saveNt(){try{localStorage.setItem('lawapp_nt2',JSON.stringify(nt))}catch(e){}}
 
 async function init(){
-try{
-const[lr,ir]=await Promise.all([fetch('laws.json').then(r=>r.json()),fetch('interpretations.json').then(r=>r.json()).catch(()=>[])]);
-L=lr;I=ir;C=[...new Set(L.map(l=>l.lawName))];
-document.getElementById('totalLabel').textContent='共 '+L.length+' 條';
-document.getElementById('loading').classList.add('hide');
-rc();ds();di();
-}catch(e){document.getElementById('loading').innerHTML='<p>載入失敗: '+e.message+'</p>';}
+  try{
+    const[lr,ir]=await Promise.all([fetch('laws.json').then(r=>r.json()),fetch('interpretations.json').then(r=>r.json()).catch(()=>[])]);
+    L=lr;I=ir;C=[...new Set(L.map(l=>l.lawName))];
+    document.getElementById('cntLabel').textContent='共 '+L.length+' 條法規';
+    document.getElementById('ld').classList.add('done');
+    rc();ds();di();
+  }catch(e){document.getElementById('ld').innerHTML='<p style="color:red">載入失敗: '+e.message+'</p>';}
 }
 
 function stab(t){
-document.querySelectorAll('.tab').forEach((e,i)=>e.classList.toggle('on',['s','i','b','n'][i]===t));
-document.querySelectorAll('.pg').forEach((e,i)=>e.classList.toggle('on',['s','i','b','n'][i]===t));
-if(t==='b')rb();if(t==='n')rn();
+  document.querySelectorAll('.tab').forEach(function(e,i){e.classList.toggle('on',['s','i','b','n'][i]===t)});
+  document.querySelectorAll('.pg').forEach(function(e,i){e.classList.toggle('on',['s','i','b','n'][i]===t)});
+  if(t==='b')rb();if(t==='n')rn();
 }
 
-function rc(){document.getElementById('cb').innerHTML=['全部',...C].map(c=>'<div class="cbtn'+(c===cc?' on':'')+'" onclick="sc(\''+c+'\')">'+c+'</div>').join('')}
+function rc(){document.getElementById('cb').innerHTML=['全部'].concat(C).map(function(c){return'<div class="cbtn'+(c===cc?' on':'')+'" onclick="sc(\''+c+'\')">'+c+'</div>'}).join('')}
 function sc(c){cc=c;rc();ds()}
 
 function ds(){
-cq=document.getElementById('si').value.trim();
-fl=L.filter(l=>{
-if(cc!=='全部'&&l.lawName!==cc)return false;
-if(!cq)return true;
-const q=cq,f=l.paragraphs.map(p=>p.text).join('');
-return f.includes(q)||l.articleNum.includes(q)||l.lawName.includes(q)||(l.chapter&&l.chapter.includes(q))||(l.keywords&&l.keywords.some(k=>k.includes(q)));
-});
-rl();rr();
+  var q=document.getElementById('si').value.trim();
+  fl=L.filter(function(l){
+    if(cc!=='全部'&&l.lawName!==cc)return false;
+    if(!q)return true;
+    var f=l.paragraphs.map(function(p){return p.text}).join('');
+    return f.indexOf(q)>-1||l.articleNum.indexOf(q)>-1||l.lawName.indexOf(q)>-1||(l.chapter&&l.chapter.indexOf(q)>-1)||(l.keywords&&l.keywords.some(function(k){return k.indexOf(q)>-1}));
+  });
+  rl();rr();
 }
 
 function rl(){
-const e=document.getElementById('ll');
-document.getElementById('rc').textContent=(cq?'搜尋「'+cq+'」— ':'')+(cc!=='全部'?cc+' ':'')+'共 '+fl.length+' 條';
-if(!fl.length){e.innerHTML='<div class="ety"><p style="font-size:32px">🔍</p><p>找不到符合的法條</p></div>';return}
-const s=fl.slice(0,200);
-e.innerHTML=s.map(l=>{
-const c=lcc(l.lawName),st=gst(l.chapter),pv=l.paragraphs.map(p=>p.text).join(' ').slice(0,150),ib=bm.includes(l.id),pc=l.paragraphs.length;
-return '<div class="cd '+c+'" onclick="ol(\''+l.id+'\')"><div class="cdt"><span class="bdg">'+l.lawName+'</span><span class="cdn">'+l.articleNum+'</span>'+(pc>1?'<span class="cdp">('+pc+'項)</span>':'')+'<span class="bm'+(ib?' on':'')+'" onclick="event.stopPropagation();tb(\''+l.id+'\')">'+( ib?'★':'☆')+'</span></div>'+(st?'<div class="cdch">'+st+'</div>':(l.chapter?'<div style="font-size:11px;color:var(--tx3);margin-bottom:2px">'+l.chapter+'</div>':''))+'<div class="cdtx">'+pv+'</div>'+(l.keywords&&l.keywords.length?'<div class="cdkw">'+l.keywords.slice(0,3).map(k=>'<span class="kwt">'+k+'</span>').join('')+'</div>':'')+'</div>';
-}).join('')+(fl.length>200?'<div style="text-align:center;padding:20px;color:var(--tx3)">顯示前 200 條，請搜尋縮小範圍</div>':'');
+  var e=document.getElementById('ll');
+  var q=document.getElementById('si').value.trim();
+  document.getElementById('rc').textContent=(q?'搜尋「'+q+'」— ':'')+(cc!=='全部'?cc+' ':'')+'共 '+fl.length+' 條';
+  if(!fl.length){e.innerHTML='<div class="ety"><p>🔍</p><p>找不到符合的法條</p></div>';return}
+  var s=fl.slice(0,200);
+  e.innerHTML=s.map(function(l){
+    var ci='lc'+(CM[l.lawName]||0),st=gst(l.chapter),pv=l.paragraphs.map(function(p){return p.text}).join(' ').slice(0,150),ib=bm.indexOf(l.id)>-1,pc=l.paragraphs.length;
+    return'<div class="cd '+ci+'" onclick="ol(\''+l.id+'\')"><div class="cdt"><span class="bdg" style="background:var(--abg);color:var(--atx)">'+l.lawName+'</span><span class="cdn">'+l.articleNum+'</span>'+(pc>1?'<span style="font-size:11px;color:var(--tx3)">('+pc+'項)</span>':'')+'<span class="bm'+(ib?' on':'')+'" onclick="event.stopPropagation();tb(\''+l.id+'\')">'+(ib?'★':'☆')+'</span></div>'+(st?'<div class="cdst">'+st+'</div>':(l.chapter?'<div class="cdch">'+l.chapter+'</div>':''))+'<div class="cdtx">'+pv+'</div>'+(l.keywords&&l.keywords.length?'<div class="cdkw">'+l.keywords.slice(0,3).map(function(k){return'<span class="kwt">'+k+'</span>'}).join('')+'</div>':'')+'</div>';
+  }).join('')+(fl.length>200?'<div style="text-align:center;padding:20px;color:var(--tx3)">顯示前 200 條</div>':'');
 }
 
 function rr(){
-const r=document.getElementById('rl');
-if(cc==='全部'||fl.length<10){r.innerHTML='';return}
-const st=Math.max(1,Math.ceil(fl.length/35));let h='';
-for(let i=0;i<fl.length;i+=st){const n=fl[i].articleNum.replace(/第|條|\s/g,'');h+='<span>'+n+'</span>'}
-r.innerHTML=h;
+  var r=document.getElementById('rl');
+  if(cc==='全部'||fl.length<15){r.style.display='none';return}
+  r.style.display='flex';
+  var step=Math.max(1,Math.ceil(fl.length/30)),h='';
+  for(var i=0;i<fl.length;i+=step){h+='<span onclick="jmp('+i+')">'+fl[i].articleNum.replace(/第|條|\s/g,'')+'</span>'}
+  r.innerHTML=h;
 }
-
-function srd(e){
-e.preventDefault();
-const mv=ev=>{const r=document.getElementById('rl').getBoundingClientRect(),y=(ev.touches?ev.touches[0].clientY:ev.clientY)-r.top,rt=Math.max(0,Math.min(1,y/r.height)),idx=Math.round(rt*(Math.min(fl.length,200)-1)),cs=document.querySelectorAll('#ll .cd');if(cs[idx])cs[idx].scrollIntoView({behavior:'auto',block:'start'})};
-const up=()=>{document.removeEventListener('mousemove',mv);document.removeEventListener('mouseup',up);document.removeEventListener('touchmove',mv);document.removeEventListener('touchend',up)};
-
-function cn2n(s){
-  if(!s||/^\d+$/.test(s))return s;
-  var m={零:0,一:1,二:2,三:3,四:4,五:5,六:6,七:7,八:8,九:9,十:10,百:100};
-  var r=0,c=0;
-  for(var i=0;i<s.length;i++){var v=m[s[i]];if(v===undefined)continue;if(v===100){r+=(c||1)*100;c=0}else if(v===10){r+=(c||1)*10;c=0}else c=v}
-  return String(r+c);
-}
-document.addEventListener('mousemove',mv);document.addEventListener('mouseup',up);document.addEventListener('touchmove',mv);document.addEventListener('touchend',up);mv(e);
-}
+function jmp(i){var cs=document.querySelectorAll('#ll .cd');if(cs[i])cs[i].scrollIntoView({behavior:'smooth',block:'start'})}
 
 function ol(id){
-const l=L.find(x=>x.id===id);if(!l)return;
-const c=lcc(l.lawName),st=gst(l.chapter),ib=bm.includes(id);
-document.getElementById('mhd').innerHTML='<div class="'+c+'" style="flex:1"><div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap"><span class="bdg">'+l.lawName+'</span><span class="an">'+l.articleNum+'</span><span class="bm'+(ib?' on':'')+'" onclick="tb(\''+id+'\');ol(\''+id+'\')">'+( ib?'★':'☆')+'</span></div>'+(st?'<div class="st" style="margin-top:4px">'+st+'</div>':'')+'</div><span class="mcl" onclick="cm()">✕</span>';
+  var l=L.find(function(x){return x.id===id});if(!l)return;
+  var ci='lc'+(CM[l.lawName]||0),st=gst(l.chapter),ib=bm.indexOf(id)>-1;
+  document.getElementById('mhd').className='mhd '+ci;
+  document.getElementById('mhd').innerHTML='<div style="flex:1"><div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap"><span class="bdg" style="background:var(--abg);color:var(--atx)">'+l.lawName+'</span><span class="an">'+l.articleNum+'</span><span class="bm'+(ib?' on':'')+'" onclick="tb(\''+id+'\');ol(\''+id+'\')">'+(ib?'★':'☆')+'</span></div>'+(st?'<div class="st" style="margin-top:4px;color:var(--ac)">'+st+'</div>':'')+'</div><div class="mcl" onclick="cm()">✕</div>';
+  document.getElementById('mhd').style.borderBottomColor='var(--ac)';
 
-let b='';
-if(l.chapter)b+='<div class="chb '+c+'">'+l.chapter+'</div>';
+  var b='';
+  if(l.chapter)b+='<div class="chb" style="border-left-color:var(--ac);background:var(--alt);color:var(--atx)">'+l.chapter+'</div>';
 
-l.paragraphs.forEach(p=>{
-const ind=p.indent===1;
-const lt=lr(p.text,l.lawName);
-b+='<div class="pr '+c+(ind?' ind':'')+'"><div class="pl '+(ind?'ku':'xi')+'">'+p.item+'</div><div class="pt">'+lt+'</div></div>';
-});
+  l.paragraphs.forEach(function(p){
+    var ind=p.indent===1;
+    b+='<div class="pr '+(ind?'ind':'')+'"><div class="pl '+(ind?'ku':'xi')+'">'+p.item+'</div><div class="pt">'+lr(p.text,l.lawName)+'</div></div>';
+  });
 
-if(l.keywords&&l.keywords.length){
-b+='<div class="sec"><div class="sct">關鍵字</div><div class="kww">';
-l.keywords.forEach(k=>{b+='<span class="kwc" onclick="document.getElementById(\'si\').value=\''+k+'\';cm();stab(\'s\');ds()">'+k+'</span>'});
-b+='</div></div>';
-}
+  if(l.keywords&&l.keywords.length){
+    b+='<div class="sec"><div class="sct">🏷️ 關鍵字</div><div class="kww">';
+    l.keywords.forEach(function(k){b+='<button class="kwc" onclick="document.getElementById(\'si\').value=\''+k+'\';cm();stab(\'s\');ds()">'+k+'</button>'});
+    b+='</div></div>';
+  }
 
-const note=nt[id]||'';
-b+='<div class="sec"><div class="sct">📝 我的筆記</div><textarea class="nta" id="na" placeholder="輸入筆記、口訣、重點整理...">'+note+'</textarea><div style="margin-top:8px;text-align:right"><button class="btn bp" onclick="sn(\''+id+'\')">儲存筆記</button></div></div>';
+  var note=nt[id]||'';
+  b+='<div class="sec"><div class="sct">📝 我的筆記</div><textarea class="nta" id="na" placeholder="輸入筆記、口訣、重點整理...">'+note+'</textarea><div style="margin-top:10px;text-align:right"><button class="btn bp" onclick="sn(\''+id+'\')">儲存筆記</button></div></div>';
 
-document.getElementById('mb').innerHTML=b;
-document.getElementById('ov').classList.add('show');
-document.body.style.overflow='hidden';
+  document.getElementById('mb').innerHTML=b;
+  document.getElementById('mb').className='mb '+ci;
+  document.getElementById('ov').classList.add('show');
+  document.body.style.overflow='hidden';
 }
 
 function cm(){document.getElementById('ov').classList.remove('show');document.body.style.overflow=''}
 
+// Cross-reference with Chinese number conversion
 function lr(text,ln){
-return text.replace(/((?:民法|刑法|憲法|行政程序法)?第[\d\-一二三四五六七八九十百零]+條(?:之[\d一二三四五六七八九十]+)?)/g,(m)=>{
-return '<a class="xr" onclick="event.stopPropagation();or(\''+m.replace(/'/g,'')+'\'  ,\''+ln+'\')">'+m+'</a>';
-});
+  return text.replace(/((?:民法|刑法|憲法|行政程序法|行政訴訟法|行政罰法|行政執行法|民事訴訟法|刑事訴訟法|強制執行法|訴願法|國家賠償法|勞動基準法|著作權法|商標法|專利法|公司法)?第[\d\-一二三四五六七八九十百零]+條(?:之[\d一二三四五六七八九十]+)?)/g,function(m){
+    return'<a class="xr" onclick="event.stopPropagation();or(\''+m+'\',\''+ln+'\')">'+m+'</a>';
+  });
 }
 
 function or(ref,ln){
-var lm=ref.match(/^(\S+法|\S+條例)/);
-var sl=lm?lm[1]:ln;
-var np=ref.replace(/^(?:\S+法|\S+條例)/,'').replace(/第/,'').replace(/條.*$/,'');
-np=cn2n(np);
-var f=L.find(function(l){
-  if(l.lawName!==sl)return false;
-  var an=l.articleNum.replace(/[^0-9\-]/g,'');
-  return an===np||an===np.replace(/-/g,'-');
-});
-if(!f&&!lm){f=L.find(function(l){var an=l.articleNum.replace(/[^0-9\-]/g,'');return an===np})}
-if(f)ol(f.id);
-}
-function tb(id){const i=bm.indexOf(id);if(i>-1)bm.splice(i,1);else bm.push(id);localStorage.setItem('lawapp_bm',JSON.stringify(bm));rl()}
-function rb(){
-const e=document.getElementById('bl'),bs=L.filter(l=>bm.includes(l.id));
-if(!bs.length){e.innerHTML='<div class="ety"><p style="font-size:32px">📑</p><p>尚無收藏</p></div>';return}
-e.innerHTML=bs.map(l=>{const c=lcc(l.lawName);return '<div class="cd '+c+'" onclick="ol(\''+l.id+'\')"><div class="cdt"><span class="bdg">'+l.lawName+'</span><span class="cdn">'+l.articleNum+'</span><span class="bm on" onclick="event.stopPropagation();tb(\''+l.id+'\');rb()">★</span></div><div class="cdtx">'+l.paragraphs.map(p=>p.text).join(' ').slice(0,100)+'</div></div>'}).join('');
+  var lawNames=['民法','刑法','憲法','憲法增修條文','行政程序法','行政訴訟法','行政罰法','行政執行法','民事訴訟法','刑事訴訟法','強制執行法','訴願法','國家賠償法','勞動基準法','著作權法','商標法','專利法','營業秘密法','通訊保障及監察法','貪污治罪條例','公司法','家庭暴力防治法','公務人員任用法'];
+  var foundLaw='';
+  for(var i=0;i<lawNames.length;i++){if(ref.indexOf(lawNames[i])===0){foundLaw=lawNames[i];break}}
+  var sl=foundLaw||ln;
+  var np=ref.replace(foundLaw,'').replace(/第/,'').replace(/條.*/,'');
+  np=cn2n(np);
+  var f=L.find(function(l){
+    if(l.lawName!==sl)return false;
+    var an=l.articleNum.replace(/[^0-9\-]/g,'');
+    return an===np;
+  });
+  if(!f&&!foundLaw){
+    f=L.find(function(l){return l.articleNum.replace(/[^0-9\-]/g,'')===np});
+  }
+  if(f){cm();setTimeout(function(){ol(f.id)},100)}
 }
 
-function sn(id){const t=document.getElementById('na').value.trim();if(t)nt[id]=t;else delete nt[id];localStorage.setItem('lawapp_nt',JSON.stringify(nt));alert('筆記已儲存！')}
+function tb(id){var i=bm.indexOf(id);if(i>-1)bm.splice(i,1);else bm.push(id);saveBm();rl()}
+function rb(){
+  var e=document.getElementById('bl'),bs=L.filter(function(l){return bm.indexOf(l.id)>-1});
+  if(!bs.length){e.innerHTML='<div class="ety"><p>📑</p><p>尚無收藏</p></div>';return}
+  e.innerHTML=bs.map(function(l){var ci='lc'+(CM[l.lawName]||0);return'<div class="cd '+ci+'" onclick="ol(\''+l.id+'\')"><div class="cdt"><span class="bdg" style="background:var(--abg);color:var(--atx)">'+l.lawName+'</span><span class="cdn">'+l.articleNum+'</span><span class="bm on" onclick="event.stopPropagation();tb(\''+l.id+'\');rb()">★</span></div><div class="cdtx">'+l.paragraphs.map(function(p){return p.text}).join(' ').slice(0,100)+'</div></div>'}).join('');
+}
+
+function sn(id){var t=document.getElementById('na').value.trim();if(t)nt[id]=t;else delete nt[id];saveNt();alert('筆記已儲存！')}
 function rn(){
-const e=document.getElementById('nl'),ids=Object.keys(nt),nd=L.filter(l=>ids.includes(l.id));
-if(!nd.length){e.innerHTML='<div class="ety"><p style="font-size:32px">📝</p><p>尚無筆記</p></div>';return}
-e.innerHTML=nd.map(l=>{const c=lcc(l.lawName);return '<div class="cd '+c+'" onclick="ol(\''+l.id+'\')"><div class="cdt"><span class="bdg">'+l.lawName+'</span><span class="cdn">'+l.articleNum+'</span></div><div class="nb">'+nt[l.id]+'</div></div>'}).join('');
+  var e=document.getElementById('nl'),ids=Object.keys(nt),nd=L.filter(function(l){return ids.indexOf(l.id)>-1});
+  if(!nd.length){e.innerHTML='<div class="ety"><p>📝</p><p>尚無筆記</p></div>';return}
+  e.innerHTML=nd.map(function(l){var ci='lc'+(CM[l.lawName]||0);return'<div class="cd '+ci+'" onclick="ol(\''+l.id+'\')"><div class="cdt"><span class="bdg" style="background:var(--abg);color:var(--atx)">'+l.lawName+'</span><span class="cdn">'+l.articleNum+'</span></div><div class="nb">'+nt[l.id]+'</div></div>'}).join('');
 }
 
 function di(){
-const e=document.getElementById('il');
-if(!I.length){e.innerHTML='<div class="ety"><p style="font-size:32px">📜</p><p>尚無釋字資料</p></div>';return}
-const q=(document.getElementById('ii')?.value||'').trim();
-let d=[...I].sort((a,b)=>b.num-a.num);
-if(q){if(/^\d+$/.test(q))d=d.filter(i=>String(i.num).includes(q));else d=d.filter(i=>(i.issue&&i.issue.includes(q))||(i.mainText&&i.mainText.includes(q)))}
-e.innerHTML=d.slice(0,200).map(i=>'<div class="ic" onclick="oi('+i.num+')"><div class="itt">釋字第 '+i.num+' 號</div>'+(i.date?'<div class="itd">'+i.date+'</div>':'')+'<div class="iti">'+(i.issue||i.mainText?.slice(0,100)||'（內容待載入）')+'</div></div>').join('');
+  var e=document.getElementById('il');
+  if(!I.length){e.innerHTML='<div class="ety"><p>📜</p><p>尚無釋字資料</p></div>';return}
+  var q=(document.getElementById('ii')||{}).value||'';q=q.trim();
+  var d=I.slice().sort(function(a,b){return b.num-a.num});
+  if(q){if(/^\d+$/.test(q))d=d.filter(function(i){return String(i.num).indexOf(q)>-1});else d=d.filter(function(i){return(i.issue&&i.issue.indexOf(q)>-1)||(i.mainText&&i.mainText.indexOf(q)>-1)})}
+  e.innerHTML=d.slice(0,200).map(function(i){return'<div class="ic" onclick="oi('+i.num+')"><div class="itt">釋字第 '+i.num+' 號</div>'+(i.date?'<div class="itd">'+i.date+'</div>':'')+'<div class="iti">'+(i.issue||'（內容待載入）')+'</div></div>'}).join('');
 }
 
 function oi(n){
-const i=I.find(x=>x.num===n);if(!i)return;
-document.getElementById('mhd').innerHTML='<div style="flex:1"><span style="font-size:20px;font-weight:800;color:#1E40AF">釋字第 '+i.num+' 號</span>'+(i.date?'<span style="font-size:13px;color:var(--tx3);margin-left:8px">('+i.date+')</span>':'')+'</div><span class="mcl" onclick="cm()">✕</span>';
-let b='';
-if(i.issue)b+='<div class="sec"><div class="sct" style="color:#1E40AF">爭點：</div><p style="font-size:16px;line-height:1.8;font-weight:700">'+i.issue+'</p></div>';
-if(i.mainText)b+='<div class="sec"><div class="sct" style="color:#1E40AF">解釋文：</div><p style="font-size:15px;line-height:1.8;white-space:pre-wrap">'+i.mainText+'</p></div>';
-if(i.reasoning)b+='<div class="sec"><div class="sct" style="color:#1E40AF">理由書：</div><p style="font-size:14px;line-height:1.8;color:#374151;white-space:pre-wrap">'+i.reasoning+'</p></div>';
-if(!i.mainText&&!i.reasoning)b+='<div class="ety"><p>此號釋字尚未載入內容</p></div>';
-document.getElementById('mb').innerHTML=b;
-document.getElementById('ov').classList.add('show');
-document.body.style.overflow='hidden';
+  var i=I.find(function(x){return x.num===n});if(!i)return;
+  document.getElementById('mhd').className='mhd';
+  document.getElementById('mhd').innerHTML='<div style="flex:1"><span style="font-size:22px;font-weight:900;color:#0984E3">釋字第 '+i.num+' 號</span>'+(i.date?'<span style="font-size:13px;color:var(--tx3);margin-left:8px">('+i.date+')</span>':'')+'</div><div class="mcl" onclick="cm()">✕</div>';
+  document.getElementById('mhd').style.borderBottomColor='#0984E3';
+  var b='';
+  if(i.issue)b+='<div class="sec"><div class="sct" style="color:#0984E3">⚡ 爭點</div><p style="font-size:16px;line-height:1.85;font-weight:700">'+i.issue+'</p></div>';
+  if(i.mainText)b+='<div class="sec"><div class="sct" style="color:#0984E3">📜 解釋文</div><p style="font-size:15px;line-height:1.85;white-space:pre-wrap">'+i.mainText+'</p></div>';
+  if(i.reasoning)b+='<div class="sec"><div class="sct" style="color:#0984E3">📋 理由書</div><p style="font-size:14px;line-height:1.85;color:var(--tx2);white-space:pre-wrap">'+i.reasoning+'</p></div>';
+  if(!i.mainText&&!i.reasoning)b+='<div class="ety"><p>此號釋字尚未載入內容</p></div>';
+  document.getElementById('mb').innerHTML=b;
+  document.getElementById('mb').className='mb';
+  document.getElementById('ov').classList.add('show');
+  document.body.style.overflow='hidden';
 }
 
-document.addEventListener('keydown',e=>{if(e.key==='Escape')cm()});
+document.addEventListener('keydown',function(e){if(e.key==='Escape')cm()});
 init();
 </script>
 </body>
